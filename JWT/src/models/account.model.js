@@ -3,7 +3,8 @@ import mongoose from 'mongoose';
 const schema = mongoose.Schema(
     {
         email: { type: String, required: true, unique: true },
-        name: { type: String, required: true },
+        displayName: { type: String, required: true },
+        fourDigits: { type: String, require: true }
     },
     {
         collection: 'accounts',

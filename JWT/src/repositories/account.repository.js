@@ -1,7 +1,6 @@
-import crypto from 'crypto';
-import httpErrors from 'http-errors';
+import HttpErrors from 'http-errors';
 
-import Accounts from '../models/account.model.js';
+import Account from '../models/account.model.js';
 
 class AccountRepository {
 
