@@ -16,7 +16,14 @@ class AccountRoutes {
     }
 
     async post(req, res, next) {
-       
+       try {
+        let account = await accountRepository.create(req.body);
+        account = account.toObject({getter:false, virtuals:false});
+        account = accountRepository.transform(account);
+        res.status(201).json(account);
+       } catch(err) {
+        return next(err);
+       }
     }
 
     async secure(req, res, next) {
@@ -24,7 +31,18 @@ class AccountRoutes {
     }
 
     async login(req, res, next) {
-       
+       const { email, password } = req.body;
+
+       const result = await account.login(email, password);
+       if(result.account) {
+        let account = result.account.toObject({getters: false, virtuals:false});
+        account = accountRepository.transform(account);
+        //TODO: Token
+        let tokens = {};
+        res.status(201).json({account, tokens});
+       } else {
+
+       }
     }
 
     async refreshToken(req, res, next) {
