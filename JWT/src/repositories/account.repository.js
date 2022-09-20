@@ -1,5 +1,6 @@
 import argon from 'argon2';
 import Chance from 'chance';
+import jwt from 'jsonwebtoken';
 import HttpErrors from 'http-errors';
 
 import Account from '../models/account.model.js';
@@ -34,7 +35,11 @@ class AccountRepository {
         }
     }
 
-    generateJWT(account, needNewRefresh = true) {}
+    generateJWT(email) {
+        const accessToken = jwt.sign({email}, process.env.JWT_TOKEN_SECRET, {expiresIn: process.env.JWT_TOKEN_LIFE, issuer: process.env.BASE_URL});
+
+        return { accessToken };
+    }
 
     async validateRefreshToken(email, refreshToken) {}
 
