@@ -8,16 +8,21 @@ import Account from '../models/account.model.js';
 const chance = new Chance();
 
 class AccountRepository {
+
+    retrieveById(id) {
+        return Account.findById(id);
+    }
+
     async login(email, password) {
         const account = await Account.findOne({ email: email });
-        if(!account) {
-            return {err: HttpErrors.Unauthorized()};
+        if (!account) {
+            return { err: HttpErrors.Unauthorized() };
         } else {
             const passwordValid = await argon.verify(account.passwordHash, password);
-            if(passwordValid) {
-                return { account }
+            if (passwordValid) {
+                return { account };
             } else {
-                return {err: HttpErrors.Unauthorized()};
+                return { err: HttpErrors.Unauthorized() };
             }
         }
     }
@@ -35,10 +40,17 @@ class AccountRepository {
         }
     }
 
-    generateJWT(email) {
-        const accessToken = jwt.sign({email}, process.env.JWT_TOKEN_SECRET, {expiresIn: process.env.JWT_TOKEN_LIFE, issuer: process.env.BASE_URL});
+    generateJWT(email, id) {
+        const accessToken = jwt.sign({ email }, process.env.JWT_TOKEN_SECRET, {
+            expiresIn: process.env.JWT_TOKEN_LIFE,
+            issuer: process.env.BASE_URL
+        });
+        const refreshToken = jwt.sign({ id }, process.env.JWT_REFRESH_SECRET, {
+            expiresIn: process.env.JWT_REFRESH_LIFE,
+            issuer: process.env.BASE_URL
+        });
 
-        return { accessToken };
+        return { accessToken, refreshToken };
     }
 
     async validateRefreshToken(email, refreshToken) {}
